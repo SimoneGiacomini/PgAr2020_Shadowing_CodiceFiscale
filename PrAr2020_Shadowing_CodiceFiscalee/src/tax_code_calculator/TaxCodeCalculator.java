@@ -8,6 +8,6 @@ public abstract class TaxCodeCalculator {
 
 	private static final HashMap<String, String> town= XMLManager.readTown();
 	
-	
+	//WWWW
 
 }
