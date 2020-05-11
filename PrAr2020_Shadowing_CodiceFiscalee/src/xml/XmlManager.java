@@ -17,7 +17,7 @@ public class XmlManager {
 	private static HashMap<String, String> towns = new HashMap<String, String>();
 
 	/**
-	 * read the InputPersone.xml file
+	 * read the InputPersone.xml file 
 	 * 
 	 *
 	 * @return an arrayList of people
@@ -54,8 +54,6 @@ public class XmlManager {
 					// Person person =new Person();
 					// String taxCode=calcTaxCode(person);
 					// people.add(person);
-					// System.out.println(name + " " + surname + " " + gender + " " + birthPlace + "
-					// " + birthDate);
 				}
 				xmlr.next();
 			}
