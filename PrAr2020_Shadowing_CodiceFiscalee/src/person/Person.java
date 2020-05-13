@@ -2,6 +2,7 @@ package person;
 
 import java.time.LocalDate;
 
+
 public class Person {
 
 	public static enum Gender {
@@ -19,7 +20,8 @@ public class Person {
 
 	private static int progressivo = 0;
 
-	public Person(String name, String surname, String gender, String birth_date, String birth_town) {
+	public Person(String name, String surname, String gender, String birth_date, String birth_town)
+		{
 		setGender(gender.trim());
 		setName(name.trim());
 		setSurname(surname.trim());
@@ -30,16 +32,17 @@ public class Person {
 
 	public Person(String name, String surname, Character gender, int birth_day, int birth_month, int birth_year,
 			String birth_town) {
-		this(name, surname, gender.toString(), String.format("%04d-%02d-%02d", birth_year, birth_month, birth_day), birth_town);
+		this(name, surname, gender.toString(), String.format("%04d-%02d-%02d", birth_year, birth_month, birth_day),
+				birth_town);
 	}
 
 	public Person(String name, String surname, String gender, int birth_day, int birth_month, int birth_year,
 			String birth_town) {
-		this(name, surname, gender, String.format("%04d-%02d-%02d", birth_year, birth_month, birth_day),
-				birth_town);
+		this(name, surname, gender, String.format("%04d-%02d-%02d", birth_year, birth_month, birth_day), birth_town);
 	}
 
-	public Person(String name, String surname, Character gender, String birth_date, String birth_town) {
+	public Person(String name, String surname, Character gender, String birth_date, String birth_town)
+			 {
 		this(name, surname, gender.toString(), birth_date, birth_town);
 	}
 
@@ -79,8 +82,7 @@ public class Person {
 	private void setGender(String gender) throws IllegalArgumentException {
 		gender.toUpperCase();
 		if (!(gender.equals(Gender.F.toString()) || gender.equals(Gender.M.toString()))) {
-			throw new IllegalArgumentException(
-					"Gender must be \"" + Gender.M.toString() + "\", or \"" + Gender.F.toString() + "\"");
+			throw new IllegalArgumentException("Gender must be \"" + Gender.M.toString() + "\", or \"" + Gender.F.toString() + "\"");
 		}
 		this.gender = Gender.valueOf(gender.toString());
 	}
@@ -89,7 +91,7 @@ public class Person {
 		return birth_date.toString();
 	}
 
-	private void setBirth_date(LocalDate birth_date) {
+	private void setBirth_date(LocalDate birth_date) throws IllegalArgumentException {
 		if (birth_date.isAfter(LocalDate.now()) || birth_date.isBefore(LocalDate.ofYearDay(1900, 1))) {
 			throw new IllegalArgumentException("ERROR ON DATE");
 		}
