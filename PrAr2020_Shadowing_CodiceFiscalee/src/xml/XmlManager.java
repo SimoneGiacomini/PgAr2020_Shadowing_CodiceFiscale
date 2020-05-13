@@ -17,7 +17,7 @@ public class XmlManager {
 	private static HashMap<String, String> towns = new HashMap<String, String>();
 
 	/**
-	 * read the InputPersone.xml file 
+	 * read the InputPersone.xml file
 	 * 
 	 *
 	 * @return an arrayList of people
@@ -28,8 +28,8 @@ public class XmlManager {
 		xmlif = XMLInputFactory.newInstance();
 		ArrayList<Person> people = new ArrayList<Person>();
 		try {
-			xmlr = xmlif.createXMLStreamReader("./Input Esercizio 3.2.1/InputPersone.xml",
-					new FileInputStream("./Input Esercizio 3.2.1/InputPersone.xml"));
+			xmlr = xmlif.createXMLStreamReader("./Input Esercizio 3.2.1 (1)/inputPersone.xml",
+					new FileInputStream("./Input Esercizio 3.2.1 (1)/inputPersone.xml"));
 			while (xmlr.hasNext()) {
 				if (xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("persona")) {
 					xmlr.nextTag();
@@ -51,9 +51,9 @@ public class XmlManager {
 					xmlr.nextTag();
 					xmlr.next();
 					String birthDate = xmlr.getText();
-					// Person person =new Person();
-					// String taxCode=calcTaxCode(person);
-					// people.add(person);
+					Person person = new Person(name, surname, gender, birthDate, birthPlace);
+					//String taxCode=calcTaxCode(person);
+					people.add(person);
 				}
 				xmlr.next();
 			}
@@ -92,8 +92,8 @@ public class XmlManager {
 		XMLStreamReader xmlr = null;
 		xmlif = XMLInputFactory.newInstance();
 		try {
-			xmlr = xmlif.createXMLStreamReader("./Input Esercizio 3.2.1/comuni.xml",
-					new FileInputStream("./Input Esercizio 3.2.1/comuni.xml"));
+			xmlr = xmlif.createXMLStreamReader("./Input Esercizio 3.2.1 (1)/comuni.xml",
+					new FileInputStream("./Input Esercizio 3.2.1 (1)/comuni.xml"));
 			while (xmlr.hasNext()) {
 				if (xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("comune")) {
 					xmlr.nextTag();
@@ -119,8 +119,11 @@ public class XmlManager {
 
 	}
 
-//	public static void main(String args[]) {
-//		//readPeople();
-//
-//	}
+	public static void main(String args[]) {
+		ArrayList<Person> people= new ArrayList<Person>();
+		people.addAll(readPeople());
+		for(Person p: people) {
+			System.out.println(p.toString());
+		}
+	}
 }
