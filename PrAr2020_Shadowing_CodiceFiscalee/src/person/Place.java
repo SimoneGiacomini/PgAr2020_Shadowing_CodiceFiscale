@@ -1,15 +1,26 @@
 package person;
 
+import xml.XmlManager;
+
 public class Place {
 
 	private String code_place;
 	private String name_place;
 
-	public Place(String code_place, String name_place) {
+	private Place(String code_place, String name_place) {
 		this.code_place = code_place;
 		this.name_place = name_place;
 	}
-
+	public Place(String name_place) throws IllegalArgumentException{
+		name_place.toUpperCase();
+		String code=XmlManager.searchBirthPlace(name_place);
+		if(code==null) 
+			throw new IllegalArgumentException("Town not found");
+		setCode_place(code);
+		setName_place(name_place);
+	}
+	
+	
 	public String getCode_place() {
 		return code_place;
 	}
