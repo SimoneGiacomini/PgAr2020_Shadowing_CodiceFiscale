@@ -231,7 +231,7 @@ public class XmlManager {
 				writeElement(xmlw, "cognome", p.getSurname());
 				writeElement(xmlw, "sesso", p.getGender());
 				writeElement(xmlw, "comune_nascita", p.getBirth_place().getName_place());
-				writeElement(xmlw, "data_nascita", p.getBirth_date());
+				writeElement(xmlw, "data_nascita", p.getBirth_date().toString());
 
 				String taxCode = "ASSENTE";
 				if (taxCodes.contains(p.getTax_code())) {
