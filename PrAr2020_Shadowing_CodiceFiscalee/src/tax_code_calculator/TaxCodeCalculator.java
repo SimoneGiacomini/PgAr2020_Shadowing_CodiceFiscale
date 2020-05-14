@@ -81,7 +81,9 @@ public abstract class TaxCodeCalculator {
 
 	private static boolean isAllCharacter(String string) {
 		String regex = "[a-zA-Z]+";
-		return Pattern.compile(regex).matcher(string).matches();
+		if (Pattern.compile(regex).matcher(string).matches())
+			return true;
+		throw new IllegalArgumentException("This string must contain only character");
 	}
 
 	private static boolean isDigit(String string) {

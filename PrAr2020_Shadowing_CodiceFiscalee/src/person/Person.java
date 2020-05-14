@@ -127,7 +127,7 @@ public class Person {
 
 	public static void main(String args[]) {
 						      //nome  //cognome
-		Person p = new Person("maria", "bi", "f", "2000-02-02", "BRESCIA");
+		Person p = new Person("Simone", "222", "M", "1900-10-10", "BRESCIA");
 		System.out.println(p.getTax_code());
 	}
 }
