@@ -14,6 +14,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import person.Person;
+import tax_code_calculator.TaxCodeCalculator;
 
 public class XmlManager {
 	private static final String BASE_PATH = "./Input Esercizio 3.2.1/";
@@ -195,6 +196,15 @@ public class XmlManager {
 	 * @param people
 	 */
 	public static void writePeople(ArrayList<Person> people) {
+		ArrayList<String> taxCodes = readTaxCodes();
+		ArrayList<String> wrongTaxCodes = new ArrayList<String>();
+
+		for (int i = 0; i < taxCodes.size(); i++) {
+			if (!TaxCodeCalculator.isValidTaxCode(taxCodes.get(i))) {
+				wrongTaxCodes.add(taxCodes.remove(i));
+			}
+		}
+
 		XMLOutputFactory xmlof = null;
 		XMLStreamWriter xmlw = null;
 
@@ -213,7 +223,6 @@ public class XmlManager {
 
 			xmlw.writeStartElement("persone");
 			xmlw.writeAttribute("numero", Integer.toString(people.size()));
-
 			for (Person p : people) {
 				xmlw.writeStartElement("persona");
 				xmlw.writeAttribute("id", Integer.toString(p.getId()));
@@ -224,8 +233,32 @@ public class XmlManager {
 				writeElement(xmlw, "comune_nascita", p.getBirth_place().getName_place());
 				writeElement(xmlw, "data_nascita", p.getBirth_date());
 
+				String taxCode = "ASSENTE";
+				if (taxCodes.contains(p.getTax_code())) {
+					taxCode = p.getTax_code();
+					taxCodes.remove(taxCode);
+				}
+				writeElement(xmlw, "codice_fiscale", taxCode);
+
 				xmlw.writeEndElement();
 			}
+			xmlw.writeEndElement();
+
+			xmlw.writeStartElement("codici");
+
+			xmlw.writeStartElement("invalidi");
+			xmlw.writeAttribute("numero", Integer.toString(wrongTaxCodes.size()));
+			for (String taxCode : wrongTaxCodes) {
+				writeElement(xmlw, "codice", taxCode);
+			}
+			xmlw.writeEndElement();
+
+			xmlw.writeStartElement("spaiati");
+			xmlw.writeAttribute("numero", Integer.toString(taxCodes.size()));
+			for (String taxCode : taxCodes) {
+				writeElement(xmlw, "codice", taxCode);
+			}
+			xmlw.writeEndElement();
 
 			xmlw.writeEndElement();
 			xmlw.writeEndDocument();
