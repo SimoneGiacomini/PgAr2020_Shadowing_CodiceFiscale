@@ -283,9 +283,15 @@ public class XmlManager {
 
 		people.add(new Person("GABRIELE", "CERESARA", "M", "2000-06-16", "BRESCIA"));
 
-		System.out.println(readTaxCodes());
+		// System.out.println(readTaxCodes());
 
 		writePeople(people);
+
+		try {
+			XMLFormatter.format("./Output/codiciPersone.xml");
+		} catch (FileNotFoundException | XMLStreamException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
