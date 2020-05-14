@@ -158,10 +158,10 @@ public class XmlManager {
 				xmlw.writeCharacters(p.getGender());
 				xmlw.writeEndElement();
 				xmlw.writeStartElement("comune_nascita");
-				xmlw.writeCharacters(p.getBirth_place().toString());
+				xmlw.writeCharacters(p.getBirth_place().getName_place());
 				xmlw.writeEndElement();
 				xmlw.writeStartElement("data_nascita");
-				xmlw.writeCharacters(p.getBirth_date());
+				xmlw.writeCharacters(p.getBirth_date().toString());
 				xmlw.writeEndElement();
 				xmlw.writeEndElement();
 				// gestione del codice fiscale

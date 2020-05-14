@@ -1,7 +1,9 @@
 package person;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import tax_code_calculator.TaxCodeCalculator;
 
 public class Person {
 
@@ -20,14 +22,14 @@ public class Person {
 
 	private static int progressivo = 0;
 
-	public Person(String name, String surname, String gender, String birth_date, String birth_town)
-		{
+	public Person(String name, String surname, String gender, String birth_date, String birth_town) {
 		setGender(gender.trim());
 		setName(name.trim());
 		setSurname(surname.trim());
 		setBirth_date(LocalDate.parse(birth_date.trim()));
 		setBirth_place(birth_town.trim());
 		newID();
+		setTax_code();
 	}
 
 	public Person(String name, String surname, Character gender, int birth_day, int birth_month, int birth_year,
@@ -41,8 +43,7 @@ public class Person {
 		this(name, surname, gender, String.format("%04d-%02d-%02d", birth_year, birth_month, birth_day), birth_town);
 	}
 
-	public Person(String name, String surname, Character gender, String birth_date, String birth_town)
-			 {
+	public Person(String name, String surname, Character gender, String birth_date, String birth_town) {
 		this(name, surname, gender.toString(), birth_date, birth_town);
 	}
 
@@ -62,7 +63,7 @@ public class Person {
 	private void setName(String name) throws IllegalArgumentException {
 		if (name.length() < 3)
 			throw new IllegalArgumentException("Name entered too short");
-		this.name = name;
+		this.name = name.toUpperCase();
 	}
 
 	public String getSurname() {
@@ -72,7 +73,7 @@ public class Person {
 	private void setSurname(String surname) throws IllegalArgumentException {
 		if (surname.length() < 2)
 			throw new IllegalArgumentException("Surname entered too short");
-		this.surname = surname;
+		this.surname = surname.toUpperCase();
 	}
 
 	public String getGender() {
@@ -80,15 +81,16 @@ public class Person {
 	}
 
 	private void setGender(String gender) throws IllegalArgumentException {
-		gender.toUpperCase();
+		gender = gender.toUpperCase();
 		if (!(gender.equals(Gender.F.toString()) || gender.equals(Gender.M.toString()))) {
-			throw new IllegalArgumentException("Gender must be \"" + Gender.M.toString() + "\", or \"" + Gender.F.toString() + "\"");
+			throw new IllegalArgumentException(
+					"Gender must be \"" + Gender.M.toString() + "\", or \"" + Gender.F.toString() + "\"");
 		}
 		this.gender = Gender.valueOf(gender.toString());
 	}
 
-	public String getBirth_date() {
-		return birth_date.toString();
+	public LocalDate getBirth_date() {
+		return birth_date;
 	}
 
 	private void setBirth_date(LocalDate birth_date) throws IllegalArgumentException {
@@ -110,8 +112,8 @@ public class Person {
 		return tax_code;
 	}
 
-	public void setTax_code(String tax_code) {
-		this.tax_code = tax_code;
+	private void setTax_code() {
+		this.tax_code = TaxCodeCalculator.taxCodeCalculator(this);
 	}
 
 	public String toString() {
@@ -119,4 +121,13 @@ public class Person {
 				getBirth_place().getName_place());
 	}
 
+	public boolean isFemale() {
+		return this.gender.equals(Gender.F);
+	}
+
+	public static void main(String args[]) {
+						      //nome  //cognome
+		Person p = new Person("maria", "bi", "f", "2000-02-02", "BRESCIA");
+		System.out.println(p.getTax_code());
+	}
 }
