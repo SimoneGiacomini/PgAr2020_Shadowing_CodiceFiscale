@@ -118,6 +118,16 @@ public class XmlManager {
 		return towns.get(townName);
 	}
 
+	public static boolean isValidBirthPlaceCode(String code) {
+		for (String value : towns.values()) {
+			if (value.equals(code)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * read the comuni.xml file
 	 *
@@ -271,19 +281,7 @@ public class XmlManager {
 	}
 
 	public static void main(String args[]) {
-		// ArrayList<Person> code = new ArrayList<Person>();
-		// code.addAll(readPeople());
-		// for (Person s : code) {
-		// System.out.println(s.toString());
-		// }
-
-		// writePeople(people);
-		// System.out.println(readPeople());
-		ArrayList<Person> people = new ArrayList<Person>();
-
-		people.add(new Person("GABRIELE", "CERESARA", "M", "2000-06-16", "BRESCIA"));
-
-		// System.out.println(readTaxCodes());
+		ArrayList<Person> people = readPeople();
 
 		writePeople(people);
 

@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import person.Person;
+import xml.XmlManager;
 
 public abstract class TaxCodeCalculator {
     /** a number to add for create a tax code */
@@ -83,7 +84,7 @@ public abstract class TaxCodeCalculator {
         String regex = "[a-zA-Z]+";
         if (Pattern.compile(regex).matcher(string).matches())
             return true;
-        throw new IllegalArgumentException("This string must contain only character");
+        return false;
     }
 
     private static boolean isDigit(String string) {
@@ -177,6 +178,55 @@ public abstract class TaxCodeCalculator {
     }
 
     public static boolean isValidTaxCode(String taxCode) {
+        if (taxCode.length() != 16) {
+            return false;
+        }
+
+        String name = taxCode.substring(0, 3);
+        String surname = taxCode.substring(3, 6);
+        String birthYear = taxCode.substring(6, 8);
+        char birthMonth = taxCode.charAt(8);
+        String birthDay = taxCode.substring(9, 11);
+        String birthPlace = taxCode.substring(11, 15);
+        char controlChar = taxCode.charAt(15);
+
+        if (!isAllCharacter(name) || !isAllCharacter(surname)) {
+            return false;
+        }
+
+        if (name.equals("XXX") || surname.equals("XXX")) {
+            return false;
+        }
+
+        if (!isDigit(birthYear) || !isDigit(birthDay)) {
+            return false;
+        }
+
+        if (!MONTH.values().contains(String.format("%c", birthMonth))) {
+            return false;
+        }
+
+        if (!XmlManager.isValidBirthPlaceCode(birthPlace)) {
+            return false;
+        }
+
+        int day = Integer.parseInt(birthDay);
+        if (day >= 41) {
+            day -= 40;
+        }
+
+        if (day < 1 || day > 31) {
+            return false;
+        }
+
+        if ((birthMonth == 'D' || birthMonth == 'H' || birthMonth == 'P' || birthMonth == 'S') && day > 30) {
+            return false;
+        }
+
+        if (birthMonth == 'B' && day > 28) {
+            return false;
+        }
+
         return true;
     }
 }
