@@ -18,7 +18,7 @@ import xml.XmlManager;
 
 public abstract class TaxCodeCalculator {
     /** a number to add for create a tax code */
-    private static final int NUMBER_FOR_FEMALE_TAXCODE = 30;
+    private static final int NUMBER_FOR_FEMALE_TAXCODE = 40;
     /** the character to put when the letters isn' t enought to create a tax code */
     private static final char X_CONSTANT = 'X';
     /**
@@ -68,18 +68,6 @@ public abstract class TaxCodeCalculator {
         map.put(10, "R");
         map.put(11, "S");
         map.put(12, "T");
-        map.put((int) 'A', "01");
-        map.put((int) 'B', "02");
-        map.put((int) 'C', "03");
-        map.put((int) 'D', "04");
-        map.put((int) 'E', "05");
-        map.put((int) 'H', "06");
-        map.put((int) 'L', "07");
-        map.put((int) 'M', "08");
-        map.put((int) 'P', "09");
-        map.put((int) 'R', "10");
-        map.put((int) 'S', "11");
-        map.put((int) 'T', "12");
         return Collections.unmodifiableMap(map);
     }
 
@@ -272,9 +260,17 @@ public abstract class TaxCodeCalculator {
 
         String name = taxCode.substring(0, 3);
         String surname = taxCode.substring(3, 6);
-        String birthYear = "19" + taxCode.substring(6, 8);
-        String birthMonth = MONTH.get((int) taxCode.charAt(8));
+        String birthYear = taxCode.substring(6, 8);
+        char birthMonth = taxCode.charAt(8);
         String birthDay = taxCode.substring(9, 11);
+
+        if (!isDigit(birthDay) || !isDigit(birthYear)) {
+            return false;
+        }
+
+        if (!MONTH.values().contains(String.format("%c", birthMonth))) {
+            return false;
+        }
 
         int day = Integer.parseInt(birthDay);
         if (day >= 41) {
@@ -285,17 +281,18 @@ public abstract class TaxCodeCalculator {
             return false;
         }
 
-        try {
-            LocalDate date = LocalDate.parse(String.format("%s-%s-%s", birthYear, birthMonth, birthDay));
+        if ((birthMonth == 'D' || birthMonth == 'H' || birthMonth == 'P' || birthMonth == 'S') && day > 30) {
+            return false;
+        }
 
-        } catch (DateTimeException e) {
+        if (birthMonth == 'B' && day > 28) {
             return false;
         }
 
         String birthPlace = taxCode.substring(11, 15);
         char controlChar = taxCode.charAt(15);
 
-        if (!name.equals(createTaxCodeName(name)) || !surname.equals(createTaxCodeName(surname))) {
+        if (!isAllCharacter(name) || !isAllCharacter(surname)) {
             return false;
         }
 

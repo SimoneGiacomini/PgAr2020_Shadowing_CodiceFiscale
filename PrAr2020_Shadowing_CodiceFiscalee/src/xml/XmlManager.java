@@ -298,7 +298,7 @@ public class XmlManager {
 			e.printStackTrace();
 		}
 
-		System.out.println(people.get(999).getTax_code());
+		// System.out.println(TaxCodeCalculator.isValidTaxCode("CRRMRA39C44G800G"));
 
 	}
 
