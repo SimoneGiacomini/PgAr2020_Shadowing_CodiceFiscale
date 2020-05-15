@@ -68,18 +68,18 @@ public abstract class TaxCodeCalculator {
         map.put(10, "R");
         map.put(11, "S");
         map.put(12, "T");
-        map.put((int) 'A',"01");
-        map.put((int) 'B',"02");
-        map.put((int) 'C',"03");
-        map.put((int) 'D',"04");
-        map.put((int) 'E',"05");
-        map.put((int) 'H',"06");
-        map.put((int) 'L',"07");
-        map.put((int) 'M',"08");
-        map.put((int) 'P',"09");
-        map.put((int) 'R',"10");
-        map.put((int) 'S',"11");
-        map.put((int) 'T',"12");
+        map.put((int) 'A', "01");
+        map.put((int) 'B', "02");
+        map.put((int) 'C', "03");
+        map.put((int) 'D', "04");
+        map.put((int) 'E', "05");
+        map.put((int) 'H', "06");
+        map.put((int) 'L', "07");
+        map.put((int) 'M', "08");
+        map.put((int) 'P', "09");
+        map.put((int) 'R', "10");
+        map.put((int) 'S', "11");
+        map.put((int) 'T', "12");
         return Collections.unmodifiableMap(map);
     }
 
@@ -224,13 +224,28 @@ public abstract class TaxCodeCalculator {
 
         for (int i = 0; i < code.length(); i++) {
             if (i % 2 == 0) {
-                evenChar.add(code.charAt(i));
-            } else {
                 oddChar.add(code.charAt(i));
+            } else {
+                evenChar.add(code.charAt(i));
             }
         }
 
-        return '0';
+        int total = 0;
+        for (int i = 0; i < evenChar.size(); i++) {
+            char ec = evenChar.get(i);
+
+            if (ec >= '0' && ec <= '9') {
+                total += Integer.parseInt(String.format("%c", ec));
+            } else {
+                total += (((int) ec) - 65);
+            }
+        }
+
+        for (int i = 0; i < oddChar.size(); i++) {
+            total += oddCharacterConverter.get(oddChar.get(i));
+        }
+
+        return ((char) ('A' + (total % 26)));
     }
 
     public final static String taxCodeCalculator(Person p) {
@@ -244,7 +259,7 @@ public abstract class TaxCodeCalculator {
         day = p.isFemale() ? day + NUMBER_FOR_FEMALE_TAXCODE : day;
         end.append(String.format("%02d", day));
         end.append(p.getBirth_place().getCode_place());
-        end.append(X_CONSTANT);
+        end.append(getControlChar(end.toString()));
         return end.toString();
     }
 
@@ -252,36 +267,46 @@ public abstract class TaxCodeCalculator {
         if (taxCode.length() != 16) {
             return false;
         }
-        taxCode=taxCode.toUpperCase();
+
+        taxCode = taxCode.toUpperCase();
+
         String name = taxCode.substring(0, 3);
         String surname = taxCode.substring(3, 6);
-        String birthYear = "19"+taxCode.substring(6, 8);
-        String birthMonth = MONTH.get((int)taxCode.charAt(8));
+        String birthYear = "19" + taxCode.substring(6, 8);
+        String birthMonth = MONTH.get((int) taxCode.charAt(8));
         String birthDay = taxCode.substring(9, 11);
-        
+
         int day = Integer.parseInt(birthDay);
         if (day >= 41) {
             day -= 40;
         }
+
         if (day < 1 || day > 31) {
             return false;
-        }	
-        try {
-        LocalDate date= LocalDate.parse(String.format("%s-%s-%s", birthYear,birthMonth,birthDay));
-        }catch(DateTimeException e){
-        	return false;
         }
+
+        try {
+            LocalDate date = LocalDate.parse(String.format("%s-%s-%s", birthYear, birthMonth, birthDay));
+
+        } catch (DateTimeException e) {
+            return false;
+        }
+
         String birthPlace = taxCode.substring(11, 15);
         char controlChar = taxCode.charAt(15);
 
-        if(!name.equals(createTaxCodeName(name))||!surname.equals(createTaxCodeName(surname))) {
-        	return false;
+        if (!name.equals(createTaxCodeName(name)) || !surname.equals(createTaxCodeName(surname))) {
+            return false;
         }
 
         if (!XmlManager.isValidBirthPlaceCode(birthPlace)) {
             return false;
         }
-       
+
+        if (getControlChar(taxCode.substring(0, 15)) != controlChar) {
+            return false;
+        }
+
         return true;
     }
 }

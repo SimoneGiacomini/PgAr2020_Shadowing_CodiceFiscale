@@ -113,7 +113,7 @@ public class XmlManager {
 	 * @return the townCode
 	 */
 	public static String searchBirthPlace(String townName) {
-			return towns.get(townName);
+		return towns.get(townName);
 	}
 
 	public static boolean isValidBirthPlaceCode(String code) {
@@ -132,10 +132,10 @@ public class XmlManager {
 	 *
 	 * @return
 	 */
-	private static Map<String,String> readBirthPlace() {
+	private static Map<String, String> readBirthPlace() {
 		XMLInputFactory xmlif = null;
 		XMLStreamReader xmlr = null;
-		Map<String, String> towns= new HashMap<String, String>();
+		Map<String, String> towns = new HashMap<String, String>();
 		xmlif = XMLInputFactory.newInstance();
 
 		String filePath = BASE_PATH + BIRTH_PLACES;
@@ -154,12 +154,11 @@ public class XmlManager {
 				}
 				xmlr.next();
 			}
-			
 
 		} catch (FileNotFoundException | XMLStreamException e) {
 			e.printStackTrace();
 		}
-		
+
 		finally {
 			try {
 				xmlr.close();
@@ -288,16 +287,19 @@ public class XmlManager {
 	}
 
 	public static void main(String args[]) {
-		/*
-		 * ArrayList<Person> people = readPeople();
-		 * 
-		 * writePeople(people);
-		 * 
-		 * try { XMLFormatter.format("./Output/codiciPersone.xml"); } catch
-		 * (FileNotFoundException | XMLStreamException e) { e.printStackTrace(); }
-		 */
 
-		System.out.println((char) ('A' + 25));
+		ArrayList<Person> people = readPeople();
+
+		writePeople(people);
+
+		try {
+			XMLFormatter.format("./Output/codiciPersone.xml");
+		} catch (FileNotFoundException | XMLStreamException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(people.get(999).getTax_code());
+
 	}
 
 }
