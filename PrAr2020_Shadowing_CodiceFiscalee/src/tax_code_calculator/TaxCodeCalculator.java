@@ -1,5 +1,6 @@
 package tax_code_calculator;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,6 +68,18 @@ public abstract class TaxCodeCalculator {
         map.put(10, "R");
         map.put(11, "S");
         map.put(12, "T");
+        map.put((int) 'A',"01");
+        map.put((int) 'B',"02");
+        map.put((int) 'C',"03");
+        map.put((int) 'D',"04");
+        map.put((int) 'E',"05");
+        map.put((int) 'H',"06");
+        map.put((int) 'L',"07");
+        map.put((int) 'M',"08");
+        map.put((int) 'P',"09");
+        map.put((int) 'R',"10");
+        map.put((int) 'S',"11");
+        map.put((int) 'T',"12");
         return Collections.unmodifiableMap(map);
     }
 
@@ -239,52 +252,36 @@ public abstract class TaxCodeCalculator {
         if (taxCode.length() != 16) {
             return false;
         }
-
+        taxCode=taxCode.toUpperCase();
         String name = taxCode.substring(0, 3);
         String surname = taxCode.substring(3, 6);
-        String birthYear = taxCode.substring(6, 8);
-        char birthMonth = taxCode.charAt(8);
+        String birthYear = "19"+taxCode.substring(6, 8);
+        String birthMonth = MONTH.get((int)taxCode.charAt(8));
         String birthDay = taxCode.substring(9, 11);
+        
+        int day = Integer.parseInt(birthDay);
+        if (day >= 41) {
+            day -= 40;
+        }
+        if (day < 1 || day > 31) {
+            return false;
+        }	
+        try {
+        LocalDate date= LocalDate.parse(String.format("%s-%s-%s", birthYear,birthMonth,birthDay));
+        }catch(DateTimeException e){
+        	return false;
+        }
         String birthPlace = taxCode.substring(11, 15);
         char controlChar = taxCode.charAt(15);
 
-        if (!isAllCharacter(name) || !isAllCharacter(surname)) {
-            return false;
-        }
-
-        if (name.equals("XXX") || surname.equals("XXX")) {
-            return false;
-        }
-
-        if (!isDigit(birthYear) || !isDigit(birthDay)) {
-            return false;
-        }
-
-        if (!MONTH.values().contains(String.format("%c", birthMonth))) {
-            return false;
+        if(!name.equals(createTaxCodeName(name))||!surname.equals(createTaxCodeName(surname))) {
+        	return false;
         }
 
         if (!XmlManager.isValidBirthPlaceCode(birthPlace)) {
             return false;
         }
-
-        int day = Integer.parseInt(birthDay);
-        if (day >= 41) {
-            day -= 40;
-        }
-
-        if (day < 1 || day > 31) {
-            return false;
-        }
-
-        if ((birthMonth == 'D' || birthMonth == 'H' || birthMonth == 'P' || birthMonth == 'S') && day > 30) {
-            return false;
-        }
-
-        if (birthMonth == 'B' && day > 28) {
-            return false;
-        }
-
+       
         return true;
     }
 }
