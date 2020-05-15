@@ -2,7 +2,10 @@ package person;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
+import exception.GenderMismatchExcepiton;
+import exception.StringTooShortException;
 import tax_code_calculator.TaxCodeCalculator;
 
 public class Person {
@@ -23,13 +26,18 @@ public class Person {
 	private static int progressivo = 0;
 
 	public Person(String name, String surname, String gender, String birth_date, String birth_town) {
-		setGender(gender.trim());
-		setName(name.trim());
-		setSurname(surname.trim());
-		setBirth_date(LocalDate.parse(birth_date.trim()));
-		setBirth_place(birth_town.trim());
-		newID();
-		setTax_code();
+		try {
+			setGender(gender.trim());
+			setName(name.trim());
+			setSurname(surname.trim());
+			setBirth_date(LocalDate.parse(birth_date.trim()));
+			setBirth_place(birth_town.trim());
+			newID();
+			setTax_code();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
 	}
 
 	public Person(String name, String surname, Character gender, int birth_day, int birth_month, int birth_year,
@@ -60,9 +68,9 @@ public class Person {
 		return name;
 	}
 
-	private void setName(String name) throws IllegalArgumentException {
+	private void setName(String name) throws  StringTooShortException {
 		if (name.length() < 3)
-			throw new IllegalArgumentException("Name entered too short");
+			throw new StringTooShortException("Name entered too short");
 		this.name = name.toUpperCase();
 	}
 
@@ -70,9 +78,9 @@ public class Person {
 		return surname;
 	}
 
-	private void setSurname(String surname) throws IllegalArgumentException {
+	private void setSurname(String surname) throws StringTooShortException {
 		if (surname.length() < 2)
-			throw new IllegalArgumentException("Surname entered too short");
+			throw new StringTooShortException("Surname entered too short");
 		this.surname = surname.toUpperCase();
 	}
 
@@ -80,12 +88,10 @@ public class Person {
 		return gender.toString();
 	}
 
-	private void setGender(String gender) throws IllegalArgumentException {
+	private void setGender(String gender) throws GenderMismatchExcepiton {
 		gender = gender.toUpperCase();
 		if (!(gender.equals(Gender.F.toString()) || gender.equals(Gender.M.toString()))) {
-			throw new IllegalArgumentException(
-					"Gender must be \"" + Gender.M.toString() + "\", or \"" + Gender.F.toString() + "\"");
-		}
+			throw new GenderMismatchExcepiton();}
 		this.gender = Gender.valueOf(gender.toString());
 	}
 
@@ -127,9 +133,9 @@ public class Person {
 
 	public static void main(String args[]) {
 						      //nome  //cognome
-		Person p = new Person("Simone", "Giacomi", "M", "1970-10-10", "BRESCIA");
-		System.out.println(p.getTax_code());
-		System.out.println(TaxCodeCalculator.isValidTaxCode(p.getTax_code()));
+		Person p = new Person("ciccio", "gamer", "M", "1989-07-18", "LECCO");
+		System.out.println(TaxCodeCalculator.isValidTaxCode("abcDee72L12E507N"));
+		
 		
 	}
 }
