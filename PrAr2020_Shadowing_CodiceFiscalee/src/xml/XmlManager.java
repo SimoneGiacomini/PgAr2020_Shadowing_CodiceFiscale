@@ -281,15 +281,16 @@ public class XmlManager {
 	}
 
 	public static void main(String args[]) {
-		ArrayList<Person> people = readPeople();
+		/*
+		 * ArrayList<Person> people = readPeople();
+		 * 
+		 * writePeople(people);
+		 * 
+		 * try { XMLFormatter.format("./Output/codiciPersone.xml"); } catch
+		 * (FileNotFoundException | XMLStreamException e) { e.printStackTrace(); }
+		 */
 
-		writePeople(people);
-
-		try {
-			XMLFormatter.format("./Output/codiciPersone.xml");
-		} catch (FileNotFoundException | XMLStreamException e) {
-			e.printStackTrace();
-		}
+		System.out.println((char) ('A' + 25));
 	}
 
 }

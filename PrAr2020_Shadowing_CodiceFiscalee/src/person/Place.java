@@ -11,16 +11,16 @@ public class Place {
 		this.code_place = code_place;
 		this.name_place = name_place;
 	}
-	public Place(String name_place) throws IllegalArgumentException{
+
+	public Place(String name_place) throws IllegalArgumentException {
 		name_place.toUpperCase();
-		String code=XmlManager.searchBirthPlace(name_place);
-		if(code==null) 
+		String code = XmlManager.searchBirthPlace(name_place);
+		if (code == null)
 			throw new IllegalArgumentException("Town not found");
 		setCode_place(code);
 		setName_place(name_place);
 	}
-	
-	
+
 	public String getCode_place() {
 		return code_place;
 	}
@@ -41,7 +41,8 @@ public class Place {
 		return code_place.equalsIgnoreCase(another_place.getCode_place())
 				&& name_place.equalsIgnoreCase(another_place.getName_place());
 	}
+
 	public String toString() {
-		return String.format("%s; %s; ", code_place,name_place);
+		return String.format("%s; %s; ", code_place, name_place);
 	}
 }

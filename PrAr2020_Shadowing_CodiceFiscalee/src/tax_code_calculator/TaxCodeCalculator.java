@@ -80,6 +80,49 @@ public abstract class TaxCodeCalculator {
         return Collections.unmodifiableSet(map);
     }
 
+    private static final Map<Character, Integer> oddCharacterConverter;
+    static {
+        Map<Character, Integer> mapBuilder = new HashMap<Character, Integer>();
+        mapBuilder.put('0', 1);
+        mapBuilder.put('1', 0);
+        mapBuilder.put('2', 5);
+        mapBuilder.put('3', 7);
+        mapBuilder.put('4', 9);
+        mapBuilder.put('5', 13);
+        mapBuilder.put('6', 15);
+        mapBuilder.put('7', 17);
+        mapBuilder.put('8', 19);
+        mapBuilder.put('9', 21);
+        mapBuilder.put('A', 1);
+        mapBuilder.put('B', 0);
+        mapBuilder.put('C', 5);
+        mapBuilder.put('D', 7);
+        mapBuilder.put('E', 9);
+        mapBuilder.put('F', 13);
+        mapBuilder.put('G', 15);
+        mapBuilder.put('H', 17);
+        mapBuilder.put('I', 19);
+        mapBuilder.put('J', 21);
+        mapBuilder.put('K', 2);
+        mapBuilder.put('L', 4);
+        mapBuilder.put('M', 18);
+        mapBuilder.put('N', 20);
+        mapBuilder.put('O', 11);
+        mapBuilder.put('P', 3);
+        mapBuilder.put('Q', 6);
+        mapBuilder.put('R', 8);
+        mapBuilder.put('S', 12);
+        mapBuilder.put('T', 14);
+        mapBuilder.put('U', 16);
+        mapBuilder.put('V', 10);
+        mapBuilder.put('W', 22);
+        mapBuilder.put('X', 25);
+        mapBuilder.put('Y', 24);
+        mapBuilder.put('Z', 23);
+
+        oddCharacterConverter = Collections.unmodifiableMap(mapBuilder);
+    }
+
     private static boolean isAllCharacter(String string) {
         String regex = "[a-zA-Z]+";
         if (Pattern.compile(regex).matcher(string).matches())
@@ -160,6 +203,21 @@ public abstract class TaxCodeCalculator {
             return end.substring(0, 3).toString();
         }
         return null;
+    }
+
+    private static char getControlChar(String code) {
+        ArrayList<Character> evenChar = new ArrayList<Character>();
+        ArrayList<Character> oddChar = new ArrayList<Character>();
+
+        for (int i = 0; i < code.length(); i++) {
+            if (i % 2 == 0) {
+                evenChar.add(code.charAt(i));
+            } else {
+                oddChar.add(code.charAt(i));
+            }
+        }
+
+        return '0';
     }
 
     public final static String taxCodeCalculator(Person p) {
