@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -22,7 +24,7 @@ public class XmlManager {
 	private static final String PEOPLE_INFO_FILE = "inputPersone.xml";
 	private static final String BIRTH_PLACES = "comuni.xml";
 
-	private static HashMap<String, String> towns = new HashMap<String, String>();
+	private static Map<String, String> towns = readBirthPlace();
 
 	/**
 	 * Find the value of the next attribute of a person
@@ -111,11 +113,7 @@ public class XmlManager {
 	 * @return the townCode
 	 */
 	public static String searchBirthPlace(String townName) {
-		if (towns.isEmpty()) {
-			readBirthPlace();
-		}
-
-		return towns.get(townName);
+			return towns.get(townName);
 	}
 
 	public static boolean isValidBirthPlaceCode(String code) {
@@ -134,10 +132,10 @@ public class XmlManager {
 	 *
 	 * @return
 	 */
-	private static void readBirthPlace() {
+	private static Map<String,String> readBirthPlace() {
 		XMLInputFactory xmlif = null;
 		XMLStreamReader xmlr = null;
-
+		Map<String, String> towns= new HashMap<String, String>();
 		xmlif = XMLInputFactory.newInstance();
 
 		String filePath = BASE_PATH + BIRTH_PLACES;
@@ -156,11 +154,20 @@ public class XmlManager {
 				}
 				xmlr.next();
 			}
-			xmlr.close();
+			
 
 		} catch (FileNotFoundException | XMLStreamException e) {
 			e.printStackTrace();
 		}
+		
+		finally {
+			try {
+				xmlr.close();
+			} catch (XMLStreamException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		return Collections.unmodifiableMap(towns);
 	}
 
 	/**
