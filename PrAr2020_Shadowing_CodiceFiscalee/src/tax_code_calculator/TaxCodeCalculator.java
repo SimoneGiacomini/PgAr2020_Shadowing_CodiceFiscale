@@ -164,6 +164,14 @@ public abstract class TaxCodeCalculator {
         return true;
     }
 
+    /**
+     * Check if there is enough consonants to generate the tax code's name
+     * 
+     * @param name
+     * @param vocal
+     * @param consonant
+     * @return {@code true} if there is enough consonants
+     */
     private static boolean extractVocalConsonant(String name, List<Character> vocal, List<Character> consonant) {
         for (int i = 0; i < name.length(); i++) {
             char seq = name.charAt(i);
