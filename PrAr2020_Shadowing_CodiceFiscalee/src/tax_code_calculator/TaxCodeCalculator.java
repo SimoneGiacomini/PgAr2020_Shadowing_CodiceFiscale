@@ -1,6 +1,5 @@
 package tax_code_calculator;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -81,6 +80,10 @@ public abstract class TaxCodeCalculator {
         return Collections.unmodifiableSet(map);
     }
 
+    /**
+     * Map which stores the value of each alphanumeric character to calculate the
+     * control code.
+     */
     private static final Map<Character, Integer> oddCharacterConverter;
     static {
         Map<Character, Integer> mapBuilder = new HashMap<Character, Integer>();
@@ -124,6 +127,12 @@ public abstract class TaxCodeCalculator {
         oddCharacterConverter = Collections.unmodifiableMap(mapBuilder);
     }
 
+    /**
+     * Check if the specified string is made up by only characters
+     * 
+     * @param string
+     * @return {@code true} if the string is made up by only characters
+     */
     private static boolean isAllCharacter(String string) {
         String regex = "[a-zA-Z]+";
         if (Pattern.compile(regex).matcher(string).matches())
@@ -131,11 +140,24 @@ public abstract class TaxCodeCalculator {
         return false;
     }
 
+    /**
+     * Check if the specified string is made up by only digits
+     * 
+     * @param string
+     * @return {@code true} if the string is made up by only digits
+     */
     private static boolean isDigit(String string) {
         String regex = "\\d+";
         return Pattern.compile(regex).matcher(string).matches();
     }
 
+    /**
+     * Check if the specified string is at least as long as the specified value
+     * 
+     * @param string          the string to check
+     * @param minLongOfString the value of the minimum length
+     * @return {@code true} if the string is long enough
+     */
     private static boolean isLongEnough(String string, int minLongOfString) {
         if (string.length() < minLongOfString)
             throw new InputMismatchException("The String is too short");
@@ -156,6 +178,12 @@ public abstract class TaxCodeCalculator {
         return false;
     }
 
+    /**
+     * Creates the name code for the tax code
+     * 
+     * @param name
+     * @return the 3 digits which represents the name
+     */
     private static String createTaxCodeName(String name) {
         if (isLongEnough(name, 2) && isAllCharacter(name)) {
             ArrayList<Character> consonant = new ArrayList<>();
@@ -181,6 +209,12 @@ public abstract class TaxCodeCalculator {
         return null;
     }
 
+    /**
+     * Creates the surname code for the tax code
+     * 
+     * @param surname
+     * @return the 3 digits which represents the surname
+     */
     private static String createTaxCodeSurName(String surname) {
         if (isLongEnough(surname, 1) && isAllCharacter(surname)) {
             ArrayList<Character> consonant = new ArrayList<>();
@@ -206,10 +240,21 @@ public abstract class TaxCodeCalculator {
         return null;
     }
 
+    /**
+     * Calculates the control char of the specified tax code
+     * 
+     * @author Gabriele
+     * @param code the tax code of which calculate the control char
+     * @return the control char
+     */
     private static char getControlChar(String code) {
         ArrayList<Character> evenChar = new ArrayList<Character>();
         ArrayList<Character> oddChar = new ArrayList<Character>();
 
+        /**
+         * Divides the characters in even position from those which are in odd position
+         * and save them in 2 different lists
+         */
         for (int i = 0; i < code.length(); i++) {
             if (i % 2 == 0) {
                 oddChar.add(code.charAt(i));
@@ -218,6 +263,10 @@ public abstract class TaxCodeCalculator {
             }
         }
 
+        /**
+         * Calculates the sum of each character, every one with its specific integer
+         * value
+         */
         int total = 0;
         for (int i = 0; i < evenChar.size(); i++) {
             char ec = evenChar.get(i);
@@ -229,6 +278,7 @@ public abstract class TaxCodeCalculator {
             }
         }
 
+        // Odd characters have different values than the even ones
         for (int i = 0; i < oddChar.size(); i++) {
             total += oddCharacterConverter.get(oddChar.get(i));
         }
@@ -236,6 +286,12 @@ public abstract class TaxCodeCalculator {
         return ((char) ('A' + (total % 26)));
     }
 
+    /**
+     * Calculates the tax code of the specified person
+     * 
+     * @param p
+     * @return the tax code
+     */
     public final static String taxCodeCalculator(Person p) {
         StringBuilder end = new StringBuilder();
         LocalDate data = p.getBirth_date();// IS MORE EFFICIENT
@@ -251,7 +307,15 @@ public abstract class TaxCodeCalculator {
         return end.toString();
     }
 
+    /**
+     * Check if the specified tax code is valid
+     * 
+     * @author Gabriele
+     * @param taxCode
+     * @return {@code true} if it is valid
+     */
     public static boolean isValidTaxCode(String taxCode) {
+        // Check the length
         if (taxCode.length() != 16) {
             return false;
         }
@@ -264,27 +328,37 @@ public abstract class TaxCodeCalculator {
         char birthMonth = taxCode.charAt(8);
         String birthDay = taxCode.substring(9, 11);
 
+        // Check if day and year of birth are made up by only digits
         if (!isDigit(birthDay) || !isDigit(birthYear)) {
             return false;
         }
 
+        // Check if the code of the month of birth exists
         if (!MONTH.values().contains(String.format("%c", birthMonth))) {
             return false;
         }
 
+        /**
+         * If the day of birth is higher than 40 maybe the code is associated to a
+         * female person and must be decremented of 40
+         */
         int day = Integer.parseInt(birthDay);
         if (day >= 41) {
             day -= 40;
         }
 
+        // Check if the day of birth is a valid number
         if (day < 1 || day > 31) {
             return false;
         }
 
+        // Check if the day of birth is a valid number in relation of the month (not all
+        // months have 31 days)
         if ((birthMonth == 'D' || birthMonth == 'H' || birthMonth == 'P' || birthMonth == 'S') && day > 30) {
             return false;
         }
 
+        // Check if the day of birth is a valid number in relation of the month
         if (birthMonth == 'B' && day > 28) {
             return false;
         }
@@ -292,14 +366,17 @@ public abstract class TaxCodeCalculator {
         String birthPlace = taxCode.substring(11, 15);
         char controlChar = taxCode.charAt(15);
 
+        // Check if a name is made up by only characters
         if (!isAllCharacter(name) || !isAllCharacter(surname)) {
             return false;
         }
 
+        // Check if the specified code of the birth place is valid
         if (!XmlManager.isValidBirthPlaceCode(birthPlace)) {
             return false;
         }
 
+        // Check if the control char is valid
         if (getControlChar(taxCode.substring(0, 15)) != controlChar) {
             return false;
         }

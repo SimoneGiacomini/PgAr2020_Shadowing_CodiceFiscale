@@ -3,7 +3,6 @@ package person;
 import xml.XmlManager;
 
 public class Place {
-
 	private String code_place;
 	private String name_place;
 

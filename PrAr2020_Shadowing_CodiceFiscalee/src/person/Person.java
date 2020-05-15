@@ -1,7 +1,6 @@
 package person;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import tax_code_calculator.TaxCodeCalculator;
 
@@ -9,7 +8,6 @@ public class Person {
 
 	public static enum Gender {
 		F, M
-
 	}
 
 	private int id;
@@ -123,13 +121,5 @@ public class Person {
 
 	public boolean isFemale() {
 		return this.gender.equals(Gender.F);
-	}
-
-	public static void main(String args[]) {
-						      //nome  //cognome
-		Person p = new Person("Simone", "Giacomi", "M", "1970-10-10", "BRESCIA");
-		System.out.println(p.getTax_code());
-		System.out.println(TaxCodeCalculator.isValidTaxCode(p.getTax_code()));
-		
 	}
 }
